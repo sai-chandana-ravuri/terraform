@@ -1,19 +1,17 @@
 resource "aws_instance" "example" {
-  #count = 10
-  count = length(var.instances)
+#   for_each = var.instances
+  for_each = toset(var.instances)
   ami           = "ami-0220d79f3f480ecf5"
   instance_type = "t3.micro"
   vpc_security_group_ids = [aws_security_group.allow_tls.id]
 
   tags = {
-    Name = var.instances[count.index]
-      Project = "roboshop"
+    Name = each.key
   }
 }
 
-
 resource "aws_security_group" "allow_tls" {
-  name        = "allow_all_roboshop" #This name is for aws account
+  name        = "allow_tls_terraform_new" #This name is for aws account
   description = "Allow TLS inbound traffic and all outbound traffic"
 
    egress {
